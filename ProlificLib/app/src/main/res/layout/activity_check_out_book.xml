@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        android:background="@android:color/white"
+        android:padding="8dp"
+        >
+
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/fNameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="8dp"
+            >
+
+            <EditText
+                android:id="@+id/CheckOutBy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="22sp"
+                android:hint="Checkout By"/>
+        </android.support.design.widget.TextInputLayout>
+
+
+
+    </FrameLayout>
+
+
+</LinearLayout>

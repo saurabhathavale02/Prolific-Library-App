@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="checkout">Checkout</string>
+    <string name="delete">Delete</string>
+    <string name="no_delete_item">No Item to Delete</string>
+    <string name="cancel">Cancel</string>
+</resources>

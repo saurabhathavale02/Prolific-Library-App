@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Book Inventory</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="checkout">Checkout</string>
+    <string name="delete">Delete</string>
+    <string name="nointernet">No Internet Connectivity</string>
+    <string name="server_down">Error while Connecting to Server</string>
+    <string name="no_book">No Book in Inventory</string>
+    <string name="exit_app">Exit the application?</string>
+    <string name="Agree">Agree</string>
+    <string name="DisAgree">DisAgree</string>
+    <string name="no_delete_item">No Item to Delete</string>
+    <string name="cancel">Cancel</string>
+</resources>
