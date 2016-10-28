@@ -1,6 +1,8 @@
 package com.example.saurabh.prolificlib.presenter;
 
 
+import android.util.Log;
+
 import com.example.saurabh.prolificlib.data.ResponseParameter;
 
 import java.util.List;
@@ -52,6 +54,8 @@ public class BookDisplayPresenter implements BookDisplayContract.Presenter
                     @Override
                     public void onNext(List<ResponseParameter> posts)
                     {
+
+
                         mView.showBooks(posts);
                     }
                 });

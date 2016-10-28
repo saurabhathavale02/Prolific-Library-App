@@ -63,9 +63,9 @@ public class MainActivityPresenter implements MainActivityContract.Presenter
     }
 
     @Override
-    public void CheckOutBook(String url, String lastcheckedby)
+    public void CheckOutBook( String url, String updatedcheckby, String updatedauthor, String updatetitle, String updatepublisher, String updatedcategory)
     {
-        retrofit.create(MainActivityPresenter.ServerService.class).UpdateBookData(url,lastcheckedby).subscribeOn(Schedulers.io())
+        retrofit.create(MainActivityPresenter.ServerService.class).UpdateBookData(url,updatedcheckby,updatepublisher,updatedauthor,updatetitle,updatedcategory).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(new Observer<ResponseParameter>() {
@@ -98,7 +98,7 @@ public class MainActivityPresenter implements MainActivityContract.Presenter
 
         @FormUrlEncoded
         @PUT("{url}")
-        Observable<ResponseParameter> UpdateBookData(@Path("url") String url, @Field("lastCheckedOutBy") String lastcheckedoutby);
+        Observable<ResponseParameter> UpdateBookData(@Path("url") String url, @Field("lastCheckedOutBy") String lastcheckedoutby,@Field("publisher") String updatedpublisher,@Field("author") String updatedauthor,@Field("title") String updatedtitle,@Field("categories") String updatedcategory);
     }
 
 }

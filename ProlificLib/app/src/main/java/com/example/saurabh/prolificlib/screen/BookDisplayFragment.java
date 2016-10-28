@@ -42,6 +42,7 @@ public class BookDisplayFragment extends Fragment implements BookDisplayContract
     FloatingActionButton AddnewBookButton;
     View v;
     OnBookSelectedListener mCallback;
+    public static String TAG="LogData";
 
     public BookDisplayFragment()
     {
@@ -52,7 +53,6 @@ public class BookDisplayFragment extends Fragment implements BookDisplayContract
     public void onCreate(Bundle saveInstanceState)
     {
         super.onCreate(saveInstanceState);
-        Log.i("Checking","Create Display Fragment");
         setRetainInstance(true);
 
 
@@ -68,7 +68,6 @@ public class BookDisplayFragment extends Fragment implements BookDisplayContract
         progressBar=(ProgressBar) v.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
 
-        Log.i("Checking","Create onCreateView");
         return v;
     }
 
@@ -81,7 +80,8 @@ public class BookDisplayFragment extends Fragment implements BookDisplayContract
                 .netComponent(((App) getActivity().getApplicationContext()).getNetComponent())
                 .bookDisplayModule(new BookDisplayModule(this))
                 .build().inject(this);
-        if(((App) getActivity().getApplicationContext()).isNetworkAvailable()==true) {
+        if(((App) getActivity().getApplicationContext()).isNetworkAvailable()==true)
+        {
             bookDisplayPresenter.loadBooks();
         }
         else
@@ -108,7 +108,7 @@ public class BookDisplayFragment extends Fragment implements BookDisplayContract
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Log.i("Checking","Create onActivityCreated");
+
 
     }
 
@@ -129,8 +129,7 @@ public class BookDisplayFragment extends Fragment implements BookDisplayContract
     @Override
     public void initRecyclerView()
     {
-        Log.i("Testing","initRecyclerView");
-        System.out.println("init recycleview");
+
         BookListRecycleView=(RecyclerView) v.findViewById(R.id.booklistview);
         BookListRecycleView.setVisibility(View.GONE);
         BookListRecycleView.setLayoutManager(new LinearLayoutManager(v.getContext()));
@@ -158,19 +157,21 @@ public class BookDisplayFragment extends Fragment implements BookDisplayContract
     @Override
     public void showBooks(List<ResponseParameter> responseParameters)
     {
-        Log.i("Checking","In-:showBooks");
+
         BookListRecycleView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
         ((App) getActivity().getApplicationContext()).NumberOfBooks=responseParameters.size();
 
         bookDisplayAdapter.clearList();
-        Log.i("Checking123","total="+((App) getActivity().getApplicationContext()).NumberOfBooks);
+
         if(((App) getActivity().getApplicationContext()).NumberOfBooks>0)
         {
+            Log.i(TAG," "+((App) getActivity().getApplicationContext()).NumberOfBooks+ " books Inserted and Displayed");
             bookDisplayAdapter.addBook(responseParameters);
         }
         else
         {
+            Log.i(TAG," No books Inserted and Displayed");
             Toast.makeText(getActivity(),R.string.no_book,Toast.LENGTH_SHORT).show();
         }
 
@@ -183,14 +184,14 @@ public class BookDisplayFragment extends Fragment implements BookDisplayContract
     @Override
     public void showError(String message)
     {
-        Log.i("Error Message","Error-:"+message);
+        Log.i(TAG,"Error on server side while acquiring book data");
         Toast.makeText(getActivity(),R.string.server_down,Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void showComplete()
     {
-        Log.i("Checking","In-:showComplete");
+
         BookListRecycleView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
     }

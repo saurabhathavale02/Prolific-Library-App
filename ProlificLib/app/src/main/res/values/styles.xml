@@ -28,8 +28,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="windowMinWidthMajor">85%</item>
-        <item name="windowMinWidthMinor">85%</item>
+        <item name="windowMinWidthMajor">95%</item>
+        <item name="windowMinWidthMinor">95%</item>
 
 
     </style>

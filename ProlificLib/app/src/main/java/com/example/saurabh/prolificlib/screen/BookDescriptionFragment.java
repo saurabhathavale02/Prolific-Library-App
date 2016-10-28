@@ -4,11 +4,11 @@ package com.example.saurabh.prolificlib.screen;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +23,8 @@ import com.example.saurabh.prolificlib.presenter.BookDescriptionPresenter;
 
 import javax.inject.Inject;
 
+import static android.util.Log.i;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -34,7 +36,8 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
     final static String ARG_POSITION = "position";
     ResponseParameter mCurrentselectedbook = null;
     View v;
-    TextView SelectedAuthor,SelectedTitle,SelectedPublish,SelectedCategory,SelectedLastCheckedBy,SelectedLastCheckedDate;
+    EditText SelectedAuthor,SelectedTitle,SelectedPublish,SelectedCategory,SelectedLastCheckedBy;
+    TextView SelectedLastCheckedDate;
     LinearLayout linearLayout;
     Button Checkout,Delete;
     Boolean ShowDescription=false;
@@ -50,7 +53,6 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
     public void onCreate(Bundle saveInstanceState)
     {
         super.onCreate(saveInstanceState);
-        Log.i("Checking"," OnCreate Fragment description");
         setRetainInstance(true);
 
 
@@ -60,14 +62,13 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.i("Checking"," onCreateView Fragment description");
         v=inflater.inflate(R.layout.fragment_book_description, container, false);
         return v;
     }
 
     public void onViewCreated(View v, Bundle savedInstanceState)
     {
-        Log.i("Checking"," onViewCreated Fragment description");
+
 
         DaggerBookDescriptionComponent.builder()
                 .netComponent(((App) getActivity().getApplicationContext()).getNetComponent())
@@ -75,11 +76,11 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
                 .build().inject(this);
 
 
-        SelectedAuthor=(TextView) v.findViewById(R.id.selectedauthor);
-        SelectedTitle=(TextView) v.findViewById(R.id.selecedtitle);
-        SelectedPublish=(TextView) v.findViewById(R.id.selectedpublisher);
-        SelectedCategory=(TextView) v.findViewById(R.id.selectedcategory);
-        SelectedLastCheckedBy=(TextView) v.findViewById(R.id.selectedlastcheckedby);
+        SelectedAuthor=(EditText) v.findViewById(R.id.selectedauthor);
+        SelectedTitle=(EditText) v.findViewById(R.id.selecedtitle);
+        SelectedPublish=(EditText) v.findViewById(R.id.selectedpublisher);
+        SelectedCategory=(EditText) v.findViewById(R.id.selectedcategory);
+        SelectedLastCheckedBy=(EditText) v.findViewById(R.id.selectedlastcheckedby);
         SelectedLastCheckedDate=(TextView) v.findViewById(R.id.selectedlastcheckeddate);
 
         Checkout =(Button) v.findViewById(R.id.checkout);
@@ -97,7 +98,14 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
             {
                 if(((App) getActivity().getApplicationContext()).isNetworkAvailable()==true) {
 
-                    mCallbackcheckout.PerformCheckout(mCurrentselectedbook);
+                    String updatedauthor = SelectedAuthor.getText().toString();
+                    String updatedtitle = SelectedTitle.getText().toString();
+                    String updatedpublisher = SelectedPublish.getText().toString();
+                    String updatedcategory = SelectedCategory.getText().toString();
+                    String updatedcheckby = SelectedLastCheckedBy.getText().toString();
+                    mCallbackcheckout.PerformCheckout(mCurrentselectedbook,updatedauthor,updatedtitle,updatedpublisher,updatedcategory,updatedcheckby);
+
+
                 }
                 else
                 {
@@ -115,9 +123,8 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
                 if(((App) getActivity().getApplicationContext()).isNetworkAvailable()==true) {
 
                     String Url = mCurrentselectedbook.getUrl().replaceFirst("/", "");
-                    Log.i("Delete call", "Delete= " + Url);
-                    // Log.i("Test1","selectedbookposition="+selectedbookposition);
-                    deleteBooks(Url);
+
+                    deleteBooks(Url,mCurrentselectedbook);
                 }
                 else
                 {
@@ -134,7 +141,7 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        Log.i("Checking","Create onActivityCreated");
+        i("Checking","Create onActivityCreated");
 
     }
 
@@ -148,13 +155,13 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
         // applied to the fragment at this point so we can safely call the method
         // below that sets the article text.
 
-        Log.i("Checking"," onStart Fragment description");
+        i("Checking"," onStart Fragment description");
         Bundle args = getArguments();
 
         if (args != null)
         {
 
-            Log.i("Checking","args != null");
+            i("Checking","args != null");
             mCurrentselectedbook=(ResponseParameter) args.getParcelable("SelectedBook");
 
             // Set article based on argument passed in
@@ -165,7 +172,7 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
         else
         if (mCurrentselectedbook != null)
         {
-            Log.i("Checking","mCurrentselectedbook != null");
+            i("Checking","mCurrentselectedbook != null");
             // Set article based on saved instance state defined during onCreateView
             updateBookDesriptionView(mCurrentselectedbook);
         }
@@ -190,11 +197,11 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
     }
     public void updateBookDesriptionView(ResponseParameter selectedbookdata)
     {
-        SelectedTitle.setText("Title : "+selectedbookdata.getTitle());
-        SelectedAuthor.setText("Author : "+selectedbookdata.getAuthor());
-        SelectedCategory.setText("Category : "+selectedbookdata.getCategories());
-        SelectedPublish.setText("Publisher : "+selectedbookdata.getPublisher());
-        SelectedLastCheckedBy.setText("LastCheckedBy : "+selectedbookdata.getLastCheckedOutBy());
+        SelectedTitle.setText(selectedbookdata.getTitle());
+        SelectedAuthor.setText(selectedbookdata.getAuthor());
+        SelectedCategory.setText(selectedbookdata.getCategories());
+        SelectedPublish.setText(selectedbookdata.getPublisher());
+        SelectedLastCheckedBy.setText(selectedbookdata.getLastCheckedOutBy());
         SelectedLastCheckedDate.setText("LastCheckedDate : "+selectedbookdata.getLastCheckedOut());
 
         linearLayout.setVisibility(View.VISIBLE);
@@ -206,9 +213,9 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
 
 
     @Override
-    public void deleteBooks(String url)
+    public void deleteBooks(String url,ResponseParameter responseParameter)
     {
-        bookDescriptionPresenter.DeleteBookCall(url);
+        bookDescriptionPresenter.DeleteBookCall(url,responseParameter);
     }
 
     @Override
@@ -219,12 +226,13 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
     }
 
     @Override
-    public void showComplete()
+    public void showComplete(ResponseParameter responseParameter)
     {
 
         linearLayout.setVisibility(View.INVISIBLE);
         mCurrentselectedbook=null;
-        mCallback.DeleteCompleted();
+        mCallback.DeleteCompleted(responseParameter);
+
 
 
     }
@@ -234,7 +242,7 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
     public void onPause()
     {
         super.onPause();
-        Log.i("Checking"," onPause Fragment description");
+        i("Checking"," onPause Fragment description");
 
     }
 
@@ -242,7 +250,7 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
     public void onResume()
     {
         super.onResume();
-        Log.i("Checking"," onResume Fragment description");
+        i("Checking"," onResume Fragment description");
 
     }
 
@@ -260,13 +268,13 @@ public class BookDescriptionFragment extends Fragment implements BookDescription
 
     public interface OnBookDeletedListener
     {
-        public void DeleteCompleted();
+        public void DeleteCompleted(ResponseParameter responseParameter);
     }
 
     public interface OnCheckoutListener
     {
 
-        public void PerformCheckout(ResponseParameter SelectedBook);
+        public void PerformCheckout(ResponseParameter SelectedBook, String updatedauthor, String updatedtitle, String updatedpublisher, String updatedcategory, String updatedcheckby);
     }
 
 

@@ -13,7 +13,7 @@ public interface MainActivityContract
     {
         void displayBookDescription(ResponseParameter responseParameter);
 
-        void checkoutBook(String url, String lastcheckedby);
+        void checkoutBook( String url, String updatedcheckby, String updatedauthor, String updatetitle, String updatepublisher, String updatedcategory);
 
         Integer checkLayout();
 
@@ -25,12 +25,14 @@ public interface MainActivityContract
 
         void showCheckoutComplete();
 
+        void onOnePanelCall();
+
     }
 
     interface Presenter
     {
         void DeleteAllbook();
-        void CheckOutBook(String url, String lastcheckedby);
+        void CheckOutBook( String url, String updatedcheckby, String updatedauthor, String updatetitle, String updatepublisher, String updatedcategory);
 
     }
 }

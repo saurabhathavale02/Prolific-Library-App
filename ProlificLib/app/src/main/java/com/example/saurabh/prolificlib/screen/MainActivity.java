@@ -7,11 +7,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.saurabh.prolificlib.App;
@@ -34,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     BookDescriptionFragment bookDescriptionFragment;
     BookDisplayFragment bookDisplayFragment;
     Toolbar toolbar;
+    public static String TAG="LogData";
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -75,10 +74,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         super.onResume();
 
 
-        Log.i("Checking", "Activity Resume");
+
         if (((App) getApplicationContext()).ChangeState == 1)
         {
-            Log.i("Checking", "CheckLayout()=" + checkLayout());
             if (checkLayout() == 2)
             {
 
@@ -88,12 +86,8 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
             }
             ((App) getApplicationContext()).ChangeState = 0;
-           if(bookDisplayFragment==null)
-           {
-               bookDisplayFragment = (BookDisplayFragment)
-                       getSupportFragmentManager().findFragmentById(R.id.bookdisplay_fragment);
-           }
-            bookDisplayFragment.UpdateBookList();
+            onOnePanelCall();
+
         }
     }
 
@@ -138,12 +132,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
                             getSupportFragmentManager().findFragmentById(R.id.bookdisplay_fragment);
                 }
 
-                if (bookDisplayFragment == null) {
-                    bookDisplayFragment = (BookDisplayFragment)
-                            getSupportFragmentManager().findFragmentById(R.id.bookdisplay_fragment);
-                }
-
-                bookDisplayFragment.UpdateBookList();
+                onOnePanelCall();
             }
             else
             {
@@ -160,7 +149,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     public void onBackPressed()
     {
         int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-        Log.i("Checking","backstackcount="+backStackCount);
 
         if(getSupportFragmentManager().getBackStackEntryCount()>0) {
             getSupportFragmentManager().popBackStack();
@@ -183,7 +171,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         if(checkLayout()==1)
         {
             int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-            Log.i("Checking1","backStackCount="+backStackCount);
             for (int i = 0; i < backStackCount; i++)
             {
 
@@ -205,7 +192,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         {
 
             // If article frag is available, we're in two-pane layout...
-            Log.i("test","in 2 pane layout");
             // Call a method in the ArticleFragment to update its content
             //newFragment.
             bookDescriptionFragment.updateBookDesriptionView(selectedbook);
@@ -215,13 +201,18 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
 
     @Override
-    public void PerformCheckout(ResponseParameter SelectedBook)
+    public void PerformCheckout(ResponseParameter SelectedBook, String updatedauthor, String updatedtitle, String updatedpublisher, String updatedcategory, String updatedcheckby)
     {
-        CreateCheckOutAlertBox(SelectedBook);
+        CreateCheckOutAlertBox(SelectedBook,updatedauthor,updatedtitle,updatedpublisher,updatedcategory,updatedcheckby);
     }
 
-    private void CreateCheckOutAlertBox(final ResponseParameter selectedBook)
+    private void CreateCheckOutAlertBox(final ResponseParameter selectedBook, String updatedauthor, String updatedtitle, String updatedpublisher, String updatedcategory, String updatedcheckby)
     {
+
+        final String url=selectedBook.getUrl().toString().replaceFirst("/","");
+        checkoutBook(url,updatedcheckby,updatedauthor,updatedtitle,updatedpublisher,updatedcategory);
+
+        /*
         LayoutInflater layoutInflaterAndroid = LayoutInflater.from(this);
         View mView = layoutInflaterAndroid.inflate(R.layout.activity_check_out_book, null);
         AlertDialog.Builder alertDialogBuilderUserInput = new AlertDialog.Builder(this,R.style.Checkout_style);
@@ -229,8 +220,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
         alertDialogBuilderUserInput.setCancelable(false);
 
         final String url=selectedBook.getUrl().toString().replaceFirst("/","");
-        Log.i("Checkout call","Delete= "+url);
+
         final EditText CheckoutBy = (EditText) mView.findViewById(R.id.CheckOutBy);
+
+       // final EditText UpdatedPublisher = (EditText) mView.findViewById(R.id.UpdatedPublisher);
 
         alertDialogBuilderUserInput.setPositiveButton("Checkout", new DialogInterface.OnClickListener()
                 {
@@ -238,17 +231,19 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
                     {
 
                         String checkouttext=CheckoutBy.getText().toString();
-                        Log.i("checkouttext","checkouttext="+checkouttext.toString());
+
+                      //  String updatedpublishertext=UpdatedPublisher.getText().toString();
+
+                        String updatedpublishertext="abc";
+
                         if(checkouttext.trim().isEmpty()==true)
                         {
-                            Log.i("checkouttext","is empty");
                             CheckoutBy.setError("Checkoutby is required");
 
                         }
                         else
                         {
-                            Log.i("checkouttext","not empty");
-                            checkoutBook(url, checkouttext);
+                            checkoutBook(url, checkouttext,updatedpublishertext);
                         }
                         // ToDo get user input here
                     }
@@ -263,24 +258,24 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
         AlertDialog alertDialogAndroid = alertDialogBuilderUserInput.create();
         alertDialogAndroid.show();
+    */
     }
 
     @Override
-    public void checkoutBook(String url, String lastcheckedby)
+    public void checkoutBook( String url, String updatedcheckby, String updatedauthor, String updatetitle, String updatepublisher, String updatedcategory)
     {
-        Log.i("Checking","checkoutBook");
-        mainActivityPresenter.CheckOutBook(url,lastcheckedby);
+        mainActivityPresenter.CheckOutBook(url,updatedcheckby,updatedauthor,updatetitle,updatepublisher,updatedcategory);
     }
 
 
     @Override
     public void showCheckoutComplete()
     {
+        Log.i(TAG,"Checkout complete");
         if (checkLayout()==1)
         {
 
             int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-            Log.i("Checking1","backStackCount="+backStackCount);
             for (int i = 0; i < backStackCount; i++)
             {
 
@@ -295,16 +290,19 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
         }
         else
-        {
-            Log.i("Checking","in 2 pane layout=");
+            {
 
-
-            bookDisplayFragment=(BookDisplayFragment)
+                onOnePanelCall();
+           /*
+                bookDisplayFragment=(BookDisplayFragment)
                     getSupportFragmentManager().findFragmentById(R.id.bookdisplay_fragment);
-            bookDisplayFragment.UpdateBookList();
+                bookDisplayFragment.UpdateBookList();
+            */
         }
 
     }
+
+
 
 
     @Override
@@ -316,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     @Override
     public void showDeleteAllComplete()
     {
-        Log.i("Checking", "CheckLayout()=" + checkLayout());
+        Log.i(TAG,"All items Deleted");
         if(checkLayout()==2)
         {
 
@@ -325,8 +323,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
             bookDescriptionFragment.linearLayout.setVisibility(View.INVISIBLE);
 
-            bookDescriptionFragment=(BookDescriptionFragment)
-                    getSupportFragmentManager().findFragmentById(R.id.bookdescription_fragment);
             bookDescriptionFragment.mCurrentselectedbook=null;
 
             if(bookDisplayFragment==null)
@@ -334,26 +330,31 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
                 bookDisplayFragment = (BookDisplayFragment)
                         getSupportFragmentManager().findFragmentById(R.id.bookdisplay_fragment);
             }
+            bookDisplayFragment.bookDisplayAdapter.clearList();
 
-            bookDisplayFragment.UpdateBookList();
+  //          onOnePanelCall();
         }
         else
         {
             int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-            Log.i("Checking1","backStackCount="+backStackCount);
             for (int i = 0; i < backStackCount; i++)
             {
 
                 getSupportFragmentManager().popBackStack();
 
             }
-
-            Log.i("Checking","in bookDescriptionFragment");
+            if(bookDisplayFragment==null)
+            {
+                bookDisplayFragment = (BookDisplayFragment)
+                        getSupportFragmentManager().findFragmentById(R.id.bookdisplay_fragment);
+            }
+            bookDisplayFragment.bookDisplayAdapter.clearList();
+/*
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             bookDisplayFragment = new BookDisplayFragment();
             transaction.replace(fragment_container, bookDisplayFragment);
             transaction.commit();
-
+*/
         }
 
     }
@@ -361,7 +362,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     public void DeleAllConfirmAlertBox()
     {
         AlertDialog.Builder deleteallconfirmalertbox = new AlertDialog.Builder(this);
-        deleteallconfirmalertbox.setMessage("Delete all book Data ? ");
+        deleteallconfirmalertbox.setMessage(R.string.delete_all);
 
         deleteallconfirmalertbox
                 .setCancelable(false)
@@ -386,36 +387,50 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
 
 
     @Override
-    public void DeleteCompleted()
+    public void DeleteCompleted(ResponseParameter responseParameter)
     {
+        Log.i(TAG,"1 item deleted");
         if (checkLayout()==1)
         {
             int backStackCount = getSupportFragmentManager().getBackStackEntryCount();
-            Log.i("Checking1","backStackCount="+backStackCount);
             for (int i = 0; i < backStackCount; i++)
             {
 
                 getSupportFragmentManager().popBackStack();
 
             }
+            if(bookDisplayFragment==null)
+            {
+                bookDisplayFragment = (BookDisplayFragment)
+                        getSupportFragmentManager().findFragmentById(R.id.bookdisplay_fragment);
+            }
+            bookDisplayFragment.bookDisplayAdapter.deletebook(responseParameter);
 
+/*
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             bookDisplayFragment = new BookDisplayFragment();
             transaction.replace(fragment_container, bookDisplayFragment);
             transaction.commit();
-
+*/
           //  bookDisplayFragment.UpdateBookList();
 
         }
         else
         {
-            Log.i("Checking","in 2 pane layout=");
 
+            if(bookDisplayFragment==null)
+            {
+                bookDisplayFragment = (BookDisplayFragment)
+                        getSupportFragmentManager().findFragmentById(R.id.bookdisplay_fragment);
+            }
+            bookDisplayFragment.bookDisplayAdapter.deletebook(responseParameter);
+           // onOnePanelCall();
+            /*
             bookDisplayFragment=(BookDisplayFragment)
                     getSupportFragmentManager().findFragmentById(R.id.bookdisplay_fragment);
 
             bookDisplayFragment.UpdateBookList();
-
+            */
 
         }
 
@@ -426,7 +441,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
     public void showError(String message)
     {
         Toast.makeText(MainActivity.this,R.string.server_down,Toast.LENGTH_SHORT).show();
-        Log.i("show error","error-"+message);
+        Log.i(TAG,"error-"+message);
     }
 
 
@@ -477,6 +492,17 @@ public class MainActivity extends AppCompatActivity implements MainActivityContr
             return 2;
         }
 
+    }
+
+    @Override
+    public void onOnePanelCall()
+    {
+        if(bookDisplayFragment==null)
+        {
+            bookDisplayFragment = (BookDisplayFragment)
+                    getSupportFragmentManager().findFragmentById(R.id.bookdisplay_fragment);
+        }
+        bookDisplayFragment.UpdateBookList();
     }
 
 

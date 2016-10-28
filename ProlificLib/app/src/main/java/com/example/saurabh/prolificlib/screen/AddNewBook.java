@@ -29,6 +29,8 @@ public class AddNewBook extends AppCompatActivity implements AddNewBookContract.
     EditText Title,Author,Publisher,Category;
     Button CancelButton,AddBookButton;
     Toolbar toolbar;
+    public static String TAG="LogData";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -64,7 +66,7 @@ public class AddNewBook extends AppCompatActivity implements AddNewBookContract.
                 String newcategory=Category.getText().toString();
 
                 Integer ValidValue=validdataentered(newauthor,newcategory,newtitle,newpublisher);
-                Log.i("ValidValue","ValidValue="+ValidValue);
+
                 if(ValidValue==0)
                 {
                     addnewbook(newauthor, newcategory, newtitle, newpublisher);
@@ -151,6 +153,7 @@ public class AddNewBook extends AppCompatActivity implements AddNewBookContract.
     @Override
     public void showComplete()
     {
+        Log.i(TAG,"New Book Added to server");
         ((App) getApplicationContext()).ChangeState=1;
         finish();
 
@@ -161,7 +164,6 @@ public class AddNewBook extends AppCompatActivity implements AddNewBookContract.
     @Override
     public void onBackPressed()
     {
-        //super.onBackPressed();
         EraseDataAlertBox();
 
     }
@@ -169,11 +171,11 @@ public class AddNewBook extends AppCompatActivity implements AddNewBookContract.
     public void EraseDataAlertBox()
     {
         AlertDialog.Builder deleteallconfirmalertbox = new AlertDialog.Builder(this);
-        deleteallconfirmalertbox.setMessage("Book data will not get stored ? ");
+        deleteallconfirmalertbox.setMessage(R.string.book_not_store);
 
         deleteallconfirmalertbox
                 .setCancelable(false)
-                .setPositiveButton("Agree", new DialogInterface.OnClickListener()
+                .setPositiveButton(R.string.Agree, new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialogBox, int id)
                     {
@@ -181,7 +183,7 @@ public class AddNewBook extends AppCompatActivity implements AddNewBookContract.
                     }
                 })
 
-                .setNegativeButton("DisAgree",
+                .setNegativeButton(R.string.DisAgree,
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialogBox, int id) {
                                 dialogBox.cancel();

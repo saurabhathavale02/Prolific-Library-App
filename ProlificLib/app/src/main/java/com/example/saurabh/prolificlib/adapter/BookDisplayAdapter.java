@@ -60,10 +60,10 @@ public class BookDisplayAdapter extends RecyclerView.Adapter<BookDisplayAdapter.
 
     }
 
-    public void deletebook(Integer position)
+    public void deletebook(ResponseParameter responseParameter)
     {
         Log.i("text4","deletebook="+position);
-        blist.remove(position);
+        blist.remove(responseParameter);
         notifyDataSetChanged();
 
     }

@@ -13,4 +13,8 @@
     <string name="DisAgree">DisAgree</string>
     <string name="no_delete_item">No Item to Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="delete_all">Delete all book Data ? </string>
+    <string name="book_not_store">Book data will not get stored ?</string>
+    <string name="checkoutby_required">Checkoutby is required</string>
+    <string name="update_publisher">Updated Publisher</string>
 </resources>

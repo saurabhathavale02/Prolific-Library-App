@@ -31,7 +31,7 @@ public class BookDescriptionPresenter  implements BookDescriptionContract.Presen
     }
 
     @Override
-    public void DeleteBookCall(String url)
+    public void DeleteBookCall(String url, final ResponseParameter responseParameter)
     {
         retrofit.create(BookDescriptionPresenter.DeleteService.class).DeleteBook(url).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -40,7 +40,7 @@ public class BookDescriptionPresenter  implements BookDescriptionContract.Presen
                     @Override
                     public void onCompleted()
                     {
-                        mView.showComplete();
+                        mView.showComplete(responseParameter);
                     }
 
                     @Override
